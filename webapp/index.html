@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> 
+<html lang="en" ng-app="cddb4client" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>CDDB application</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+        <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+        <link rel="stylesheet" href="app.css">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+        <div class="container" ng-controller="AlbumController as albumCtrl">
+            <div class="row"><h3>{{"CDDB application"}}</h3></div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <span class="lead">Albums</span>                        
+                    </div>
+                    <div class="tablecontainer panel-body">
+                        <div class="searchbox">
+                            <input ng-model="query" class="form-control" placeholder="Filter">
+                        </div>
+                        <button id="filterbutton" class="btn customwidth" ng-click="albumCtrl.resetFilter()">Reset filter</button>
+                        <h3>&nbsp;</h3>
+                        <table  id="albumtable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Artist</th>
+                                    <th>Name</th>
+                                    <th class="albumTableYear">Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="album in albumCtrl.albums | filter:query| orderBy:'name'" 
+                                    ng-click="albumCtrl.selectAlbum(album.id)"
+                                    ng-class="{ info:album.id === albumCtrl.currentAlbum.id }">
+                                    <td class="albumTableText">{{ album.artist }}</td>
+                                    <td class="albumTableText">{{ album.name }}</td>
+                                    <td class="albumTableYear">{{ album.year }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><span class="lead">Album Editor</span></div>                    
+                    <div class="panel-body formcontainer">
+                        <form name="albumForm" ng-submit="albumForm.$valid && albumCtrl.submitAlbum()" class="form" novalidate>                            
+                            <div>
+                                <div class="form-group">
+                                    <label for="albumartistinput" class="sr-only">Artist</label>
+                                    <input name="aArtistIn" required ng-minlength="3" ng-maxlength="100" ng-model="albumCtrl.currentAlbum.artist" type="text" class="form-control" id="albumartistinput" placeholder="Artist">
+                                    <span id="artistHelp" class="help-block" ng-show="albumForm.aArtistIn.$invalid && albumForm.aArtistIn.$dirty">Please enter an artist name with a length between 3 and 100 characters.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="albumnameinput" class="sr-only">Name</label>
+                                    <input name="aNameIn" required ng-minlength="3" ng-maxlength="100" ng-model="albumCtrl.currentAlbum.name" type="text" class="form-control" id="albumnameinput" placeholder="Name">
+                                    <span id="artistHelp" class="help-block" ng-show="albumForm.aNameIn.$invalid && albumForm.aNameIn.$dirty">Please enter an album name with a length between 3 and 100 characters.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="albumyearinput" class="sr-only">>Year</label>
+                                    <input name="aYearIn" required min="0" max="3000" ng-model="albumCtrl.currentAlbum.year" type="number" class="form-control" id="albumyearinput" placeholder="Year">
+                                    <span id="artistHelp" class="help-block" ng-show="albumForm.aYearIn.$invalid && albumForm.aYearIn.$dirty">Please enter an album year between 0 and 3000. Technology is the future!</span>
+                                </div>
+                            </div>
+                            <div class="form-group albumbuttons">
+                                <input value="{{!albumCtrl.currentAlbum.id ? 'Add' : 'Update'}}" type="submit" class="btn btn-success customwidth button"/>
+                            </div>                            
+                            
+                        </form>
+                        <div class="btn-group">
+                            <button class="btn btn-danger customwidth" ng-click="albumCtrl.deleteAlbum()" ng-disabled="albumCtrl.currentAlbum.id === null">Delete</button>
+                            <button class="btn btn-warning customwidth" ng-click="albumCtrl.clearAlbumForm()">Clear</button>
+                        </div>
+                    </div>
+                    <div class="panel-body" ng-hide="albumCtrl.currentAlbum.tracks.length === 0 || albumCtrl.currentAlbum.id === null">
+                        <div class="tablecontainer">
+                            <table  id="tracktable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th id="trackTableNr">Track Number</th>
+                                        <th>Name</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="track in albumCtrl.currentAlbum.tracks | orderBy:'tracknr'" 
+                                        ng-click="albumCtrl.selectTrack(track.trackid)"
+                                        ng-class="{ info:track.trackid === albumCtrl.currentTrack.trackid }">
+                                        <td>{{ track.tracknr }}</td>
+                                        <td>{{ track.name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="panel panel-success" ng-hide="albumCtrl.currentAlbum.id === null">
+                    <div class="panel-heading"><span class="lead">Track Editor</span></div>
+                    <div class="panel-body">
+                        
+                        <form name="trackForm" ng-submit="trackForm.$valid && albumCtrl.submitTrack()" class="form" novalidate>
+                            <div class="form-group">
+                                <label for="tracknrinput" class="sr-only">Track Number</label>
+                                <input name="tNrInput" min="1" max="1000" required ng-model="albumCtrl.currentTrack.tracknr" type="number" class="form-control" id="tracknrinput" placeholder="Track number">
+                                <span id="artistHelp" class="help-block" ng-show="trackForm.tNrInput.$invalid && trackForm.tNrInput.$dirty">Please enter a track number between 1 and 1000.</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="tracknameinput" class="sr-only">Name</label>
+                                <input name="tNameInput" min ng-minlength="3" ng-maxlength="100" ng-model="albumCtrl.currentTrack.name" type="text" class="form-control" id="tracknameinput" placeholder="Name">
+                                <span id="artistHelp" class="help-block" ng-show="trackForm.tNameInput.$invalid && trackForm.tNameInput.$dirty">Please enter a track name with a length between 3 and 100 characters.</span>
+                            </div>
+                            <input value="{{!albumCtrl.currentTrack.trackid ? 'Add' : 'Update'}}" type="submit" class="btn btn-success customwidth button albumbuttons"/>
+                        </form>
+                        <div class="btn-group">
+                            <button class="btn btn-danger customwidth" ng-click="albumCtrl.deleteTrack()" ng-disabled="albumCtrl.currentTrack.trackid === null">Delete</button>
+                            <button class="btn btn-warning customwidth" ng-click="albumCtrl.clearTrackForm()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- In production use:
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+        -->
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/angular-route/angular-route.min.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+        <script src="app.js"></script>
+        <script src="components/album/album-controller.js"></script>
+        <script src="components/album/services.js"></script>
+        <script src="components/version/version.js"></script>
+        <script src="components/version/version-directive.js"></script>
+        <script src="components/version/interpolate-filter.js"></script>
+    </body>
+</html>

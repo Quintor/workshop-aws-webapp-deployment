@@ -1,0 +1,68 @@
+body{
+    background-color: #fcf8e3;
+}
+div.tablecontainer{
+    max-height: 350px;
+    overflow-y: auto;
+}
+#albumtable{
+    width: 100%;
+}
+td.albumbuttons{
+    width: 150px;
+    text-align: right;
+    padding-bottom: 5px;
+}
+button.customwidth{
+    width: 75px;
+}
+div.searchbox{
+    float: left;
+    width: calc(100% - 165px);
+}
+#filterbutton{
+    float: right;
+    width: 150px;
+}
+div.albumfields{
+    width: calc((100% - 165px) / 3);
+}
+#albumfieldscontainer{
+    width: 100%;
+    float: left;
+    white-space: nowrap;
+}
+.albumbuttons{
+    float: right
+}
+.table{
+    width: 100%;
+    table-layout: fixed;
+    white-space: nowrap;
+}
+#tracktable.td{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#trackTableNr{
+    width: 120px;
+}
+.albumTableYear{
+    text-align: right;
+    width: 75px;
+}
+.albumTableText{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.ng-invalid.ng-dirty{
+    border-color: #a94442;
+}
+.ng-valid.ng-dirty{
+    border-color: #3c763d;
+}
+.help-block{
+    color: #a94442;
+}
