@@ -112,8 +112,17 @@ In de laatste stap van deze workshop gaan we de REST API van de backend ontsluit
 
 ![Webhosting stap 4](images/deployment-diagrams-Hands-on%20Webhosting%204.drawio.png)
 
-Maak een nieuwe origin aan in de bestaande CloudFront distribution met als Origin domain de DNS naam van de `alb-cddb` LoadBalancer.
-Zet als Origin path `/cddb/rest`.
+Maak een nieuwe **Origin** aan in de **bestaande CloudFront Distribution** met als Origin domain de DNS naam van de `alb-cddb` LoadBalancer. 
+Laat de Origin path leeg. Deze optie maak het mogelijk om het URL pad in het binnenkomende request te wijzigen. Dit hebben we niet nodig en moeten we ook niet doen, omdat het URL pad anders niet meer klopt voor de backend applicatie.
+
+Maak een nieuwe **Behavior** aan in de **bestaande CloudFront Distribution** voor de hiervoor aangemaakt Origin.
+Stel het **Path pattern** in op `/cddb/*` zodat alle HTTP requests waarvan het URL pad begint met `/ccdb/` doorgestuurd worden naar de `alb-cddb` LoadBalancer.
+Selecteer `GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE` als toegestane HTTP methods.
+Al deze methods worden door de REST API gebruikt voor de CRUD operaties.
+Selecteer bij de **Cache policy** `CachingDisabled`, zodat de responses van GET operaties op de API **NIET** gecached worden in CloudFront.
+Doe je dit niet dan zal je niet de resultaten zien van de create, update en delete acties die je uitvoert.
+
+Als het goed is werkt de CDDB applicatie nu volledig. Maak een album aan en zie dat die weergegeven wordt. 
 
 
 
